@@ -1,7 +1,19 @@
 
 # Takes in a vector of price data and converts it to returns
-prices_to_returns <- function(data){
-  return(data)
+prices_to_returns <- function(prices){
+
+  # If data is null or has length less than 2 return an error
+  if (is.null(prices) | length(prices) < 2) {
+    stop("input data must have length of at least 2")
+  }
+
+  # Get number of points
+  n = length(prices)
+
+  # Calculate the relative change in price across each time point
+  returns = (prices[2 : n] - prices[1 : (n - 1)]) /  prices[1 : (n - 1)]
+
+  return(returns)
 }
 
 # takes in a single or multiple time series of returns and
