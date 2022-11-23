@@ -1,4 +1,13 @@
 
+
+
+#' Title
+#'
+#' @param prices
+#'
+#' @return
+#' @export
+#' @examples
 # Takes in a vector of price data and converts it to returns
 prices_to_returns <- function(prices){
 
@@ -16,6 +25,14 @@ prices_to_returns <- function(prices){
   return(returns)
 }
 
+
+#' Title
+#'
+#' @param data
+#'
+#' @return
+#' @export
+#' @examples
 # takes in a single or multiple time series of returns and
 # outputs a table with summary statistics for the time series
 # Assumes a matrix input with columns as time series
@@ -34,6 +51,14 @@ time_summary <- function(data){
 }
 
 
+
+#' Title
+#'
+#' @param data
+#'
+#' @return
+#' @export
+#' @examples
 # Takes in multiple time series and produces a graph
 # of their correlations
 # NOTE: Requires igraph package
@@ -46,6 +71,17 @@ cor_graph <- function(data){
 }
 
 
+
+#' Title
+#'
+#' @param data
+#' @param n_splits
+#' @param p_vals
+#' @param q_vals
+#'
+#' @return
+#' @export
+#' @examples
 # Performs model selection for time series data using a rolling window
 # for arma and outputs this model
 # Inputs:
@@ -107,6 +143,15 @@ arma_selection <- function(data, n_splits, p_vals, q_vals){
   return(arma_model)
 }
 
+
+
+#' Title
+#'
+#' @param data
+#'
+#' @return
+#' @export
+#' @examples
 # Performs model selection for time series data using a rolling window
 # for random forests and outputs this model
 # NOTE: Requires randomForest package
@@ -114,6 +159,14 @@ rf_selection <- function(data){
   return(rf_model)
 }
 
+
+#' Title
+#'
+#' @param data
+#'
+#' @return
+#' @export
+#' @examples
 # Performs model selection for time series data using a rolling window
 # for Support Vector Regression and outputs this model
 # NOTE: Requires e1071 package
@@ -121,6 +174,14 @@ svr_selection <- function(data){
   return(svr_model)
 }
 
+
+#' Title
+#'
+#' @param data
+#'
+#' @return
+#' @export
+#' @examples
 # Performs model selection for time series data using a rolling window
 # for xgboost and outputs this model
 # NOTE: Requires xgboost package
