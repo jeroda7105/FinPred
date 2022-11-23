@@ -71,20 +71,38 @@ arma_selection <- function(data, n_splits, p_vals, q_vals){
   # Iterate over each fold
   for (i in 1:(n_splits - 1)) {
 
+    # Get the train and test sets for this iteration
+    train_data = data[fold_ids == i]
+    test_data = data[fold_ids == i + 1]
+
     # fit arma model for each combination of the values
     for (p in 1:len_p) {
 
       for (q in 1:len_q) {
 
-        arma_fit = arima(data, order=c(p, 0, q), method="ML")
+        # Fit the arma model on the training data
+        arma_fit = arima(train_data, order=c(p, 0, q), method="ML")
 
+        # Predict future values up to the length of the test data
+        pred_vals = predict(arma_fit, n.ahead = length(test_data))
+
+        # Calculate the mean-squared error and add it to the error matrix
+        mse = sum((pred_vals - test_data)^2) / length(test_data)
+
+        err_matrix[p , q] = err_matrix[p , q] + mse
       }
 
     }
 
   }
 
+  # Get location of minimum value from the error matrix to get the best p and q values
+  best_p_q = arrayInd(which.min(err_matrix), dim(err_matrix))
 
+  best_p = best_p_q[1, 1]
+  best_q = best_p_q[1, 2]
+
+  arma_model = arima(data, order=c(best_p, 0, best_q), method="ML")
 
   return(arma_model)
 }
