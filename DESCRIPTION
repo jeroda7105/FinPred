@@ -1,10 +1,15 @@
 Package: FinPred
-Title: What the Package Does (One Line, Title Case)
+Title: FinPred, an R package for analysis and prediction of financial time series
+data.
 Version: 0.0.0.9000
 Authors@R: 
     person("Jose", "Rodriguez-Acosta", email = "jeroda7105@tamu.edu",
     role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Description: FinPred contains functions for the analysis of finan time series 
+like the creation of tables for summary statistics and visualizations of graphs
+for correlations between assets. It also offers functionality to perform model
+selection for various time series and machine learning models given sets
+of hyperparameters to tune.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -14,4 +19,5 @@ Imports:
     gt,
     igraph,
     randomForest,
+    stats,
     xgboost
