@@ -4,7 +4,14 @@
 FinPred is an R package to be used for the analysis and prediction of financial time series. It contains functions for analysis such as ones to the create tables of summary statistics and visualizations of graphs for correlations between assets. It can also be used to perform model selection for various time series prediction and machine learning models given data and sets of hyperparameters to tune.
 
 ### Installation Instructions
-Enter the command "remotes::install_github("jeroda7105/FinPred")" in the R console.
+Enter the command 
+```
+remotes::install_github("jeroda7105/FinPred")
+```
+in the R console. The package can then be imported with the command
+```
+library(FinPred)
+```
 
 ### What is Left in the Project
 What remains for the completion of the project with respect to functionality is 
