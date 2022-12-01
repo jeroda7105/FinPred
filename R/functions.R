@@ -25,6 +25,37 @@ prices_to_returns <- function(prices){
   return(returns)
 }
 
+#' Title
+#'
+#' @param data
+#' @param window_size
+#'
+#' @return
+#' @export
+#' @examples
+# Takes in a univariate time series and converts it to a windowed dataset
+windowed_data <- function(data, window_size){
+
+  # Get size of data
+  n = length(data)
+
+  # Return error if length of data is less than window_size + 1
+  if (data < window_size + 1) {
+    error("Length of data must be at least the window size plus 1")
+  }
+
+  # Initialize matrix for the windowed data
+  window_mat = matrix(nrow = n - window_size, ncol = window_size)
+
+  for (i in 1:(n - window_size)) {
+
+    window_mat[i, ] = data[i:(i + window_size - 1)]
+
+  }
+
+
+  return(window_mat)
+}
 
 #' Title
 #'
