@@ -65,11 +65,10 @@ windowed_data <- function(data, window_size){
 #' @export
 #' @examples
 # takes in a single or multiple time series of returns and
-# outputs a table with summary statistics for the time series
+# outputs a set of lists with summary statistics for the time series
 # Assumes a matrix input with columns as time series
 # Names should either be in the first row of the matrix or given as
 # an argument
-# NOTE: Requires gt package
 time_summary <- function(data){
 
   data = data.frame(data)
@@ -86,19 +85,65 @@ time_summary <- function(data){
 #' Title
 #'
 #' @param data
+#' @param has_names
 #'
 #' @return
 #' @export
 #' @examples
-# Takes in multiple time series and produces a graph
+# Takes in multiple time series in a dataframe or matrix and produces a graph
 # of their correlations
 # NOTE: Requires igraph package
-cor_graph <- function(data){
+cor_graph <- function(data, has_names = FALSE){
+
+  # If names are given, extract them
+  if (has_names) {
+
+    # Get the column names
+    names = colnames(data)
+
+    # Get names and convert data to matrix
+    data = data.matrix(data)
+  }
+
+  # If no names are given, use index numbers
+  else {
+
+    data = data.matrix(data)
+
+    # get number of time series
+    n_series = ncol(data)
+
+    names = c(1:n_series)
+
+  }
+
+  # get length of time series
+  n = nrow(data)
+
+
+  # initialize adjacency matrix of correlations
+  adj_mat = matrix(0, nrow = n, ncol = n)
 
   # Calculate adjacency matrix of correlations
+  for (i in 1:n) {
+    for (j in i:n) {
+      # Making graph undirected with no self-relation
+      if (i != j) {
+        adj_mat[i, j] = cor(data[ , i], data[ , j])
+        adj_mat[j, i] = adj_mat[i, j]
+      }
+    }
+  }
+
+  # Add names to the adjacency matrix
+  colnames(data) = names
+
+  # Create the graph visualization
+  graph_plot = graph_from_adjacency_matrix(adj_mat, mode = "undirected",
+                                           weighted = TRUE)
 
 
-  return(data)
+  return(graph_plot)
 }
 
 
