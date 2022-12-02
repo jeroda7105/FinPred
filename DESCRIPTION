@@ -16,3 +16,7 @@ Imports:
     randomForest,
     stats,
     xgboost
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
