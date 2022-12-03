@@ -69,9 +69,30 @@ windowed_data <- function(data, window_size){
 # Assumes a matrix input with columns as time series
 # Names should either be in the first row of the matrix or given as
 # an argument
-time_summary <- function(data){
+time_summary <- function(data, has_names = FALSE){
 
-  data = data.frame(data)
+  # If names are given, extract them
+  if (has_names) {
+
+    # Get the column names
+    names = colnames(data)
+
+    # Convert data to matrix
+    data = data.matrix(data)
+  }
+
+  # If no names are given, use index numbers
+  else {
+
+    data = data.matrix(data)
+
+    # get number of time series
+    n_series = ncol(data)
+
+    names = c(1:n_series)
+
+  }
+
 
   # get number of columns in the data
 
@@ -101,8 +122,11 @@ cor_graph <- function(data, has_names = FALSE){
     # Get the column names
     names = colnames(data)
 
-    # Get names and convert data to matrix
+    # Convert data to matrix
     data = data.matrix(data)
+
+    # get number of time series
+    n_series = ncol(data)
   }
 
   # If no names are given, use index numbers
@@ -117,16 +141,14 @@ cor_graph <- function(data, has_names = FALSE){
 
   }
 
-  # get length of time series
-  n = nrow(data)
 
 
   # initialize adjacency matrix of correlations
-  adj_mat = matrix(0, nrow = n, ncol = n)
+  adj_mat = matrix(0, nrow = n_series, ncol = n_series)
 
   # Calculate adjacency matrix of correlations
-  for (i in 1:n) {
-    for (j in i:n) {
+  for (i in 1:n_series) {
+    for (j in i:n_series) {
       # Making graph undirected with no self-relation
       if (i != j) {
         adj_mat[i, j] = cor(data[ , i], data[ , j])
