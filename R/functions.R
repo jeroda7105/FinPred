@@ -75,10 +75,13 @@ time_summary <- function(data, has_names = FALSE){
   if (has_names) {
 
     # Get the column names
-    names = colnames(data)
+    col_names = colnames(data)
 
     # Convert data to matrix
     data = data.matrix(data)
+
+    # get number of time series
+    n_series = ncol(data)
   }
 
   # If no names are given, use index numbers
@@ -89,16 +92,32 @@ time_summary <- function(data, has_names = FALSE){
     # get number of time series
     n_series = ncol(data)
 
-    names = c(1:n_series)
+    col_names = c(1:n_series)
 
   }
 
+  # Initialize matrix for the table
+  table = matrix(nrow = 4, ncol = n_series)
 
-  # get number of columns in the data
+  for (i in 1:n_series) {
+
+    # Calculate the summary statistics for the i-th time series
+    table[1 , i] = mean(data[ , i])
+    table[2 , i] = sd(data[ , i])
+    table[3 , i] = skewness(data[ , i])
+    table[4 , i] = kurtosis(data[ , i]) - 3
+  }
+
+  row_names = c("mean", "standard deviation", "skewness", "excess kurtosis")
+
+  colnames(table) = col_names
+  rownames(table) = row_names
 
 
+  # Convert the matrix to a table
+  table = as.table(table)
 
-  return(data)
+  return(table)
 }
 
 
