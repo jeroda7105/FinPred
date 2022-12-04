@@ -4,7 +4,7 @@
 \alias{time_summary}
 \title{Title}
 \usage{
-time_summary(data)
+time_summary(data, has_names = FALSE)
 }
 \arguments{
 \item{data}{}
