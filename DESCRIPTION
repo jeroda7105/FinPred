@@ -18,5 +18,6 @@ Imports:
     xgboost
 Suggests: 
     knitr,
+    quantmod,
     rmarkdown
 VignetteBuilder: knitr
