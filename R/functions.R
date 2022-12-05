@@ -75,7 +75,7 @@ time_summary <- function(data, has_names = FALSE){
   if (has_names) {
 
     # Get the column names
-    col_names = colnames(data)
+    row_names = colnames(data)
 
     # Convert data to matrix
     data = data.matrix(data)
@@ -92,23 +92,23 @@ time_summary <- function(data, has_names = FALSE){
     # get number of time series
     n_series = ncol(data)
 
-    col_names = c(1:n_series)
+    row_names = c(1:n_series)
 
   }
 
   # Initialize matrix for the table
-  table = matrix(nrow = 4, ncol = n_series)
+  table = matrix(nrow = n_series, ncol = 4)
 
   for (i in 1:n_series) {
 
     # Calculate the summary statistics for the i-th time series
-    table[1 , i] = mean(data[ , i])
-    table[2 , i] = sd(data[ , i])
-    table[3 , i] = skewness(data[ , i])
-    table[4 , i] = kurtosis(data[ , i]) - 3
+    table[i , 1] = round(mean(data[ , i]), 5)
+    table[i , 2] = round(sd(data[ , i]), 5)
+    table[i , 3] = round(skewness(data[ , i]), 5)
+    table[i , 4] = round(kurtosis(data[ , i]) - 3, 5)
   }
 
-  row_names = c("mean", "standard deviation", "skewness", "excess kurtosis")
+  col_names = c("mean", "sd", "skewness", "ex. kurtosis")
 
   colnames(table) = col_names
   rownames(table) = row_names
@@ -177,12 +177,12 @@ cor_graph <- function(data, has_names = FALSE){
   }
 
   # Add names to the adjacency matrix
-  colnames(data) = names
+  colnames(adj_mat) = names
 
   # Create the graph visualization
-  graph_plot = graph_from_adjacency_matrix(adj_mat, mode = "undirected",
+  graph = graph_from_adjacency_matrix(adj_mat, mode = "undirected",
                                            weighted = TRUE)
-
+  graph_plot = igraph::plot.igraph(graph, edge.label = round(igraph::E(graph)$weight, 3))
 
   return(graph_plot)
 }
