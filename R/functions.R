@@ -242,7 +242,7 @@ arma_selection <- function(data, n_splits, p_vals, q_vals){
         # Calculate the mean-squared error and add it to the error matrix
         mse = sum((pred_vals - test_data)^2) / length(test_data)
 
-        err_matrix[p , q] = err_matrix[p , q] + mse
+        err_matrix[p , q] = err_matrix[p , q] + mse / (n_splits - 1)
       }
 
     }
@@ -255,9 +255,8 @@ arma_selection <- function(data, n_splits, p_vals, q_vals){
   best_p = best_p_q[1, 1]
   best_q = best_p_q[1, 2]
 
-  arma_model = arima(data, order=c(best_p, 0, best_q), method="ML")
 
-  return(arma_model)
+  return(list(p = best_p, q = best_q))
 }
 
 
@@ -265,6 +264,10 @@ arma_selection <- function(data, n_splits, p_vals, q_vals){
 #' Title
 #'
 #' @param data
+#' @param n_splits
+#' @param window_size
+#' @param n_trees
+#' @param node_sizes
 #'
 #' @return
 #' @export
@@ -272,8 +275,64 @@ arma_selection <- function(data, n_splits, p_vals, q_vals){
 # Performs model selection for time series data using a rolling window
 # for random forests and outputs this model
 # NOTE: Requires randomForest package
-rf_selection <- function(data){
-  return(rf_model)
+rf_selection <- function(data, n_splits, window_size, n_trees, node_sizes){
+
+  # Get the number of p and q values
+  len_n_trees = length(n_trees)
+  len_node_sizes = length(node_sizes)
+
+
+  # Initialize matrix of error values for combinations of parameters
+  err_matrix = matrix(0, nrow = len_n_trees, ncol = len_node_sizes)
+
+  # Create the windowed data
+  X = windowed_data(data, window_size = window_size)
+
+  # Account for the size of the window in the data
+  y = data[n - window_size : n]
+
+
+  # Get the length of the data
+  n = length(y)
+
+  # Assign folds to data
+  fold_ids = sort(sample((1:n) %% n_splits + 1, n))
+
+
+  # Iterate over each fold
+  for (i in 1:(n_splits - 1)) {
+
+    # Get the train and test sets for this iteration
+    X_train = y[fold_ids == i, ]
+    X_test = y[fold_ids == i + 1, ]
+
+    y_train = y[fold_ids == i]
+    y_test = y[fold_ids == i + 1]
+
+    # fit randomForest model for each combination of the values
+    for (j in 1:len_n_trees) {
+      for (k in len_node_sizes) {
+
+        rf_model = randomForest(x = X_train, y = y_train, xtest = X_test,
+                                ytest = y_test, ntree = n_trees[j],
+                                nodesize = node_sizes[k])
+
+        # Get the error for this combination of parameters
+        err_matrix[j, k] = err_matrix[j, k] + rf_model$test$mse / (n_splits - 1)
+
+      }
+    }
+  }
+
+
+  # Get location of minimum value from the error matrix to get the best parameters
+  best_params = arrayInd(which.min(err_matrix), dim(err_matrix))
+
+  best_ntree = best_params[1, 1]
+  best_nodesize = best_params[1, 2]
+
+
+  return(list(ntree = best_ntree, nodesize = best_nodesize))
 }
 
 

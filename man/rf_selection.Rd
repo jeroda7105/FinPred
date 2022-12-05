@@ -4,10 +4,10 @@
 \alias{rf_selection}
 \title{Title}
 \usage{
-rf_selection(data)
+rf_selection(data, n_splits, window_size, n_trees, node_sizes)
 }
 \arguments{
-\item{data}{}
+\item{node_sizes}{}
 }
 \description{
 Title
