@@ -311,7 +311,7 @@ rf_selection <- function(data, n_splits, window_size, n_trees, node_sizes){
 
     # fit randomForest model for each combination of the values
     for (j in 1:len_n_trees) {
-      for (k in len_node_sizes) {
+      for (k in 1:len_node_sizes) {
 
         rf_model = randomForest(x = X_train, y = y_train, xtest = X_test,
                                 ytest = y_test, ntree = n_trees[j],
