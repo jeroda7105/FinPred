@@ -339,6 +339,11 @@ rf_selection <- function(data, n_splits, window_size, n_trees, node_sizes){
 #' Title
 #'
 #' @param data
+#' @param n_splits
+#' @param window_size
+#' @param gamma
+#' @param C
+#' @param epsilon
 #'
 #' @return
 #' @export
@@ -346,8 +351,74 @@ rf_selection <- function(data, n_splits, window_size, n_trees, node_sizes){
 # Performs model selection for time series data using a rolling window
 # for Support Vector Regression and outputs this model
 # NOTE: Requires e1071 package
-svr_selection <- function(data){
-  return(svr_model)
+svr_selection <- function(data, n_splits, window_size, gamma_vals, C_vals,
+                          epsilon_vals){
+
+  # Get the number of p and q values
+  len_gamma = length(gamma_vals)
+  len_C = length(C_vals)
+  len_epsilon = length(epsilon_vals)
+
+
+  # Initialize tensor of error values for combinations of parameters
+  err_tensor = array(rep(0, len_gamma * len_C * len_epsilon),
+                     dim = c(len_gamma, len_C, len_epsilon))
+
+  # Create the windowed data
+  X = windowed_data(data, window_size = window_size)
+
+  # Account for the size of the window in the data
+  y = data[n - window_size : n]
+
+
+  # Get the length of the data
+  n = length(y)
+
+  # Assign folds to data
+  fold_ids = sort(sample((1:n) %% n_splits + 1, n))
+
+
+  # Iterate over each fold
+  for (i in 1:(n_splits - 1)) {
+
+    # Get the train and test sets for this iteration
+    X_train = y[fold_ids == i, ]
+    X_test = y[fold_ids == i + 1, ]
+
+    y_train = y[fold_ids == i]
+    y_test = y[fold_ids == i + 1]
+
+    # fit svr model for each combination of the values
+    for (j in 1:len_gamma) {
+      for (k in 1:len_C) {
+        for(l in 1:len_epsilon) {
+
+
+          svr_model = svm(X_train, y_train, gamma = gamma_vals[j], C = C_vals[k],
+                          epsilon = epsilon_vals[l])
+
+          # Get predicted values
+          pred_vals = predict(svr_model, X_test)
+
+          # Calculate the error and add to this combination of parameters
+          cur_error = sum((pred_vals - y_test)^2)
+          err_tensor[j, k, l] = err_tensor[j, k, l] + cur_error / (n_splits - 1)
+
+        }
+      }
+    }
+  }
+
+
+  # Get location of minimum value from the error tensor to get the best parameters
+  best_params = arrayInd(which.min(err_tensor), dim(err_tensor))
+
+  best_gamma = best_params[1, 1]
+  best_C = best_params[1, 2]
+  best_epsilon = best_params[1, 3]
+
+
+  return(list(gamma = best_gamma, C = best_C, epsilon = best_epsilon))
 }
 
 
