@@ -4,10 +4,10 @@
 \alias{svr_selection}
 \title{Title}
 \usage{
-svr_selection(data)
+svr_selection(data, n_splits, window_size, gamma_vals, C_vals, epsilon_vals)
 }
 \arguments{
-\item{data}{}
+\item{epsilon}{}
 }
 \description{
 Title

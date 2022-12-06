@@ -4,10 +4,18 @@
 \alias{xgboost_selection}
 \title{Title}
 \usage{
-xgboost_selection(data)
+xgboost_selection(
+  data,
+  n_splits,
+  window_size,
+  eta_vals,
+  gamma_vals,
+  max_depths,
+  lambda_vals
+)
 }
 \arguments{
-\item{data}{}
+\item{lambda_vals}{}
 }
 \description{
 Title
