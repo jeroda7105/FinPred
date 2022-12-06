@@ -277,7 +277,7 @@ arma_selection <- function(data, n_splits, p_vals, q_vals){
 # NOTE: Requires randomForest package
 rf_selection <- function(data, n_splits, window_size, n_trees, node_sizes){
 
-  # Get the number of p and q values
+
   len_n_trees = length(n_trees)
   len_node_sizes = length(node_sizes)
 
@@ -354,7 +354,7 @@ rf_selection <- function(data, n_splits, window_size, n_trees, node_sizes){
 svr_selection <- function(data, n_splits, window_size, gamma_vals, C_vals,
                           epsilon_vals){
 
-  # Get the number of p and q values
+
   len_gamma = length(gamma_vals)
   len_C = length(C_vals)
   len_epsilon = length(epsilon_vals)
@@ -425,6 +425,12 @@ svr_selection <- function(data, n_splits, window_size, gamma_vals, C_vals,
 #' Title
 #'
 #' @param data
+#' @param n_splits
+#' @param window_size
+#' @param eta_vals
+#' @param gamma_vals
+#' @param max_depths
+#' @param lambda_vals
 #'
 #' @return
 #' @export
@@ -432,7 +438,78 @@ svr_selection <- function(data, n_splits, window_size, gamma_vals, C_vals,
 # Performs model selection for time series data using a rolling window
 # for xgboost and outputs this model
 # NOTE: Requires xgboost package
-xgboost_selection <- function(data){
-  return(xgboost_model)
+xgboost_selection <- function(data, n_splits, window_size, eta_vals, gamma_vals,
+                              max_depths, lambda_vals){
+
+  len_eta = length(eta_vals)
+  len_gamma = length(gamma_vals)
+  len_max_depths = length(max_depths)
+  len_lambda = length(lambda_vals)
+
+
+  # Initialize tensor of error values for combinations of parameters
+  err_tensor = array(rep(0, len_eta * len_gamma * len_max_depths * len_lambda),
+                     dim = c(len_eta * len_gamma * len_max_depths * len_lambda))
+
+  # Create the windowed data
+  X = windowed_data(data, window_size = window_size)
+
+  # Account for the size of the window in the data
+  y = data[n - window_size : n]
+
+
+  # Get the length of the data
+  n = length(y)
+
+  # Assign folds to data
+  fold_ids = sort(sample((1:n) %% n_splits + 1, n))
+
+
+  # Iterate over each fold
+  for (i in 1:(n_splits - 1)) {
+
+    # Get the train and test sets for this iteration
+    X_train = y[fold_ids == i, ]
+    X_test = y[fold_ids == i + 1, ]
+
+    y_train = y[fold_ids == i]
+    y_test = y[fold_ids == i + 1]
+
+    # fit xgboost model for each combination of the values
+    for (j in 1:len_eta) {
+      for (k in 1:len_gamma) {
+        for (l in 1:len_max_depths) {
+          for(m in 1:len_lambda) {
+
+
+            xgb_model = xgboost(data = X_train, label = y_train, max.depth = max_depths[l],
+                                eta = eta_vals[j], gamma = gamma_vals[k],
+                                lambda = lambda_vals[m])
+
+            # Get predicted values
+            pred_vals = predict(xgb_model, X_test)
+
+            # Calculate the error and add to this combination of parameters
+            cur_error = sum((pred_vals - y_test)^2)
+            err_tensor[j, k, l, m] = err_tensor[j, k, l, m] + cur_error / (n_splits - 1)
+
+          }
+        }
+      }
+    }
+  }
+
+
+  # Get location of minimum value from the error tensor to get the best parameters
+  best_params = arrayInd(which.min(err_tensor), dim(err_tensor))
+
+  best_eta = best_params[1, 1]
+  best_gamma = best_params[1, 2]
+  best_max_depth = best_params[1, 3]
+  best_lambda = best_params[1, 4]
+
+
+  return(list(eta = best_eta, gamma = best_gamma, max_depth = best_max_depth,
+              lambda = best_lambda))
 }
 
