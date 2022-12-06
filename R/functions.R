@@ -226,7 +226,9 @@ arma_selection <- function(data, n_splits, p_vals, q_vals){
 
     # Get the train and test sets for this iteration
     train_data = data[fold_ids == i]
+
     test_data = data[fold_ids == i + 1]
+
 
     # fit arma model for each combination of the values
     for (p in 1:len_p) {
@@ -238,6 +240,7 @@ arma_selection <- function(data, n_splits, p_vals, q_vals){
 
         # Predict future values up to the length of the test data
         pred_vals = predict(arma_fit, n.ahead = length(test_data))
+        pred_vals = pred_vals$pred
 
         # Calculate the mean-squared error and add it to the error matrix
         mse = sum((pred_vals - test_data)^2) / length(test_data)
@@ -401,7 +404,7 @@ svr_selection <- function(data, n_splits, window_size, gamma_vals, C_vals,
           pred_vals = predict(svr_model, X_test)
 
           # Calculate the error and add to this combination of parameters
-          cur_error = sum((pred_vals - y_test)^2)
+          cur_error = sum((pred_vals - y_test)^2) / len(y_test)
           err_tensor[j, k, l] = err_tensor[j, k, l] + cur_error / (n_splits - 1)
 
         }
@@ -490,7 +493,7 @@ xgboost_selection <- function(data, n_splits, window_size, eta_vals, gamma_vals,
             pred_vals = predict(xgb_model, X_test)
 
             # Calculate the error and add to this combination of parameters
-            cur_error = sum((pred_vals - y_test)^2)
+            cur_error = sum((pred_vals - y_test)^2) / len(y_test)
             err_tensor[j, k, l, m] = err_tensor[j, k, l, m] + cur_error / (n_splits - 1)
 
           }
