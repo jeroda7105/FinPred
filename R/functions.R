@@ -40,7 +40,7 @@ windowed_data <- function(data, window_size){
   n = length(data)
 
   # Return error if length of data is less than window_size + 1
-  if (data < window_size + 1) {
+  if (n < window_size + 1) {
     error("Length of data must be at least the window size plus 1")
   }
 
