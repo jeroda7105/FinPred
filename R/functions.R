@@ -259,7 +259,7 @@ arma_selection <- function(data, n_splits, p_vals, q_vals){
   best_q = best_p_q[1, 2]
 
 
-  return(list(p = best_p, q = best_q))
+  return(list(p = best_p, q = best_q, mse = min(err_matrix)))
 }
 
 
@@ -298,8 +298,6 @@ rf_selection <- function(data, n_splits, window_size, n_trees, node_sizes){
   y = data[window_size + 1 : n]
 
 
-  # Get the length of the data
-  n = length(y)
 
   # Assign folds to data
   fold_ids = sort(sample((1:n) %% n_splits + 1, n))
@@ -319,12 +317,15 @@ rf_selection <- function(data, n_splits, window_size, n_trees, node_sizes){
     for (j in 1:len_n_trees) {
       for (k in 1:len_node_sizes) {
 
-        rf_model = randomForest(x = X_train, y = y_train, xtest = X_test,
-                                ytest = y_test, ntree = n_trees[j],
-                                nodesize = node_sizes[k])
+        rf_model = randomForest(x = X_train, y = y_train, keep.forest=TRUE,
+                                ntree = n_trees[j], nodesize = node_sizes[k])
+        # Get predicted values
+        pred_vals = predict(rf_model, X_test)
 
-        # Get the error for this combination of parameters
-        err_matrix[j, k] = err_matrix[j, k] + sum(rf_model$test$mse) / (n_splits - 1)
+        # Calculate the error and add to this combination of parameters
+        cur_error = sum((pred_vals - y_test)^2) / length(y_test)
+
+        err_matrix[j, k] = err_matrix[j, k] + cur_error / (n_splits - 1)
 
       }
     }
@@ -338,7 +339,7 @@ rf_selection <- function(data, n_splits, window_size, n_trees, node_sizes){
   best_nodesize = node_sizes[best_params[1, 2]]
 
 
-  return(list(ntree = best_ntree, nodesize = best_nodesize))
+  return(list(ntree = best_ntree, nodesize = best_nodesize, mse = min(err_matrix)))
 }
 
 
@@ -373,12 +374,12 @@ svr_selection <- function(data, n_splits, window_size, gamma_vals, C_vals,
   # Create the windowed data
   X = windowed_data(data, window_size = window_size)
 
+  n = nrow(X)
+
   # Account for the size of the window in the data
-  y = data[n - window_size : n]
+  y = data[window_size + 1 : n]
 
 
-  # Get the length of the data
-  n = length(y)
 
   # Assign folds to data
   fold_ids = sort(sample((1:n) %% n_splits + 1, n))
@@ -388,8 +389,8 @@ svr_selection <- function(data, n_splits, window_size, gamma_vals, C_vals,
   for (i in 1:(n_splits - 1)) {
 
     # Get the train and test sets for this iteration
-    X_train = y[fold_ids == i, ]
-    X_test = y[fold_ids == i + 1, ]
+    X_train = X[fold_ids == i, ]
+    X_test = X[fold_ids == i + 1, ]
 
     y_train = y[fold_ids == i]
     y_test = y[fold_ids == i + 1]
@@ -407,7 +408,7 @@ svr_selection <- function(data, n_splits, window_size, gamma_vals, C_vals,
           pred_vals = predict(svr_model, X_test)
 
           # Calculate the error and add to this combination of parameters
-          cur_error = sum((pred_vals - y_test)^2) / len(y_test)
+          cur_error = sum((pred_vals - y_test)^2) / length(y_test)
           err_tensor[j, k, l] = err_tensor[j, k, l] + cur_error / (n_splits - 1)
 
         }
@@ -419,12 +420,13 @@ svr_selection <- function(data, n_splits, window_size, gamma_vals, C_vals,
   # Get location of minimum value from the error tensor to get the best parameters
   best_params = arrayInd(which.min(err_tensor), dim(err_tensor))
 
-  best_gamma = best_params[1, 1]
-  best_C = best_params[1, 2]
-  best_epsilon = best_params[1, 3]
+  best_gamma = gamma_vals[best_params[1, 1]]
+  best_C = C_vals[best_params[1, 2]]
+  best_epsilon = epsilon_vals[best_params[1, 3]]
 
 
-  return(list(gamma = best_gamma, C = best_C, epsilon = best_epsilon))
+  return(list(gamma = best_gamma, C = best_C, epsilon = best_epsilon,
+              mse = min(err_tensor)))
 }
 
 
@@ -460,12 +462,12 @@ xgboost_selection <- function(data, n_splits, window_size, eta_vals, gamma_vals,
   # Create the windowed data
   X = windowed_data(data, window_size = window_size)
 
+  n = nrow(X)
+
   # Account for the size of the window in the data
-  y = data[n - window_size : n]
+  y = data[window_size + 1 : n]
 
 
-  # Get the length of the data
-  n = length(y)
 
   # Assign folds to data
   fold_ids = sort(sample((1:n) %% n_splits + 1, n))
@@ -475,8 +477,8 @@ xgboost_selection <- function(data, n_splits, window_size, eta_vals, gamma_vals,
   for (i in 1:(n_splits - 1)) {
 
     # Get the train and test sets for this iteration
-    X_train = y[fold_ids == i, ]
-    X_test = y[fold_ids == i + 1, ]
+    X_train = X[fold_ids == i, ]
+    X_test = X[fold_ids == i + 1, ]
 
     y_train = y[fold_ids == i]
     y_test = y[fold_ids == i + 1]
@@ -496,7 +498,7 @@ xgboost_selection <- function(data, n_splits, window_size, eta_vals, gamma_vals,
             pred_vals = predict(xgb_model, X_test)
 
             # Calculate the error and add to this combination of parameters
-            cur_error = sum((pred_vals - y_test)^2) / len(y_test)
+            cur_error = sum((pred_vals - y_test)^2) / length(y_test)
             err_tensor[j, k, l, m] = err_tensor[j, k, l, m] + cur_error / (n_splits - 1)
 
           }
@@ -509,13 +511,13 @@ xgboost_selection <- function(data, n_splits, window_size, eta_vals, gamma_vals,
   # Get location of minimum value from the error tensor to get the best parameters
   best_params = arrayInd(which.min(err_tensor), dim(err_tensor))
 
-  best_eta = best_params[1, 1]
-  best_gamma = best_params[1, 2]
-  best_max_depth = best_params[1, 3]
-  best_lambda = best_params[1, 4]
+  best_eta = eta_vals[best_params[1, 1]]
+  best_gamma = gamma_vals[best_params[1, 2]]
+  best_max_depth = max_depths[best_params[1, 3]]
+  best_lambda = lambda_vals[best_params[1, 4]]
 
 
   return(list(eta = best_eta, gamma = best_gamma, max_depth = best_max_depth,
-              lambda = best_lambda))
+              lambda = best_lambda, mse = min(err_tensor)))
 }
 
