@@ -285,14 +285,17 @@ rf_selection <- function(data, n_splits, window_size, n_trees, node_sizes){
   len_node_sizes = length(node_sizes)
 
 
+
   # Initialize matrix of error values for combinations of parameters
   err_matrix = matrix(0, nrow = len_n_trees, ncol = len_node_sizes)
 
   # Create the windowed data
   X = windowed_data(data, window_size = window_size)
 
+  n = nrow(X)
+
   # Account for the size of the window in the data
-  y = data[n - window_size : n]
+  y = data[window_size + 1 : n]
 
 
   # Get the length of the data
@@ -306,8 +309,8 @@ rf_selection <- function(data, n_splits, window_size, n_trees, node_sizes){
   for (i in 1:(n_splits - 1)) {
 
     # Get the train and test sets for this iteration
-    X_train = y[fold_ids == i, ]
-    X_test = y[fold_ids == i + 1, ]
+    X_train = X[fold_ids == i, ]
+    X_test = X[fold_ids == i + 1, ]
 
     y_train = y[fold_ids == i]
     y_test = y[fold_ids == i + 1]
@@ -321,7 +324,7 @@ rf_selection <- function(data, n_splits, window_size, n_trees, node_sizes){
                                 nodesize = node_sizes[k])
 
         # Get the error for this combination of parameters
-        err_matrix[j, k] = err_matrix[j, k] + rf_model$test$mse / (n_splits - 1)
+        err_matrix[j, k] = err_matrix[j, k] + sum(rf_model$test$mse) / (n_splits - 1)
 
       }
     }
@@ -331,8 +334,8 @@ rf_selection <- function(data, n_splits, window_size, n_trees, node_sizes){
   # Get location of minimum value from the error matrix to get the best parameters
   best_params = arrayInd(which.min(err_matrix), dim(err_matrix))
 
-  best_ntree = best_params[1, 1]
-  best_nodesize = best_params[1, 2]
+  best_ntree = n_trees[best_params[1, 1]]
+  best_nodesize = node_sizes[best_params[1, 2]]
 
 
   return(list(ntree = best_ntree, nodesize = best_nodesize))
