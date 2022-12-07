@@ -280,7 +280,7 @@ arma_selection <- function(data, n_splits, p_vals, q_vals){
 # NOTE: Requires randomForest package
 rf_selection <- function(data, n_splits, window_size, n_trees, node_sizes){
 
-
+  # Get lengths of vectors of parameters
   len_n_trees = length(n_trees)
   len_node_sizes = length(node_sizes)
 
@@ -361,7 +361,7 @@ rf_selection <- function(data, n_splits, window_size, n_trees, node_sizes){
 svr_selection <- function(data, n_splits, window_size, gamma_vals, C_vals,
                           epsilon_vals){
 
-
+  # Get lengths of vectors of parameters
   len_gamma = length(gamma_vals)
   len_C = length(C_vals)
   len_epsilon = length(epsilon_vals)
@@ -433,12 +433,14 @@ svr_selection <- function(data, n_splits, window_size, gamma_vals, C_vals,
 #' Title
 #'
 #' @param data
+#' @param nthread
 #' @param n_splits
 #' @param window_size
 #' @param eta_vals
 #' @param gamma_vals
 #' @param max_depths
 #' @param lambda_vals
+#' @param nrounds
 #'
 #' @return
 #' @export
@@ -446,18 +448,20 @@ svr_selection <- function(data, n_splits, window_size, gamma_vals, C_vals,
 # Performs model selection for time series data using a rolling window
 # for xgboost and outputs this model
 # NOTE: Requires xgboost package
-xgboost_selection <- function(data, n_splits, window_size, eta_vals, gamma_vals,
-                              max_depths, lambda_vals){
+xgboost_selection <- function(data, nthread = 1, n_splits, window_size, eta_vals,
+                              gamma_vals, max_depths, lambda_vals, nrounds){
 
+  # Get lengths of vectors of parameters
   len_eta = length(eta_vals)
   len_gamma = length(gamma_vals)
   len_max_depths = length(max_depths)
   len_lambda = length(lambda_vals)
+  len_nrounds = length(nrounds)
 
 
   # Initialize tensor of error values for combinations of parameters
-  err_tensor = array(rep(0, len_eta * len_gamma * len_max_depths * len_lambda),
-                     dim = c(len_eta * len_gamma * len_max_depths * len_lambda))
+  err_tensor = array(rep(0, len_eta * len_gamma * len_max_depths * len_lambda * len_nrounds),
+                     dim = c(len_eta, len_gamma, len_max_depths, len_lambda, len_nrounds))
 
   # Create the windowed data
   X = windowed_data(data, window_size = window_size)
@@ -488,18 +492,22 @@ xgboost_selection <- function(data, n_splits, window_size, eta_vals, gamma_vals,
       for (k in 1:len_gamma) {
         for (l in 1:len_max_depths) {
           for(m in 1:len_lambda) {
+            for (o in 1:len_nrounds) {
 
 
-            xgb_model = xgboost(data = X_train, label = y_train, max.depth = max_depths[l],
-                                eta = eta_vals[j], gamma = gamma_vals[k],
-                                lambda = lambda_vals[m])
+              xgb_model = xgboost(data = X_train, label = y_train, nthread = nthread,
+                                  max.depth = max_depths[l], eta = eta_vals[j],
+                                  gamma = gamma_vals[k], lambda = lambda_vals[m],
+                                  nrounds = nrounds[o], verbosity = 0, verbose = 0)
 
-            # Get predicted values
-            pred_vals = predict(xgb_model, X_test)
+              # Get predicted values
+              pred_vals = predict(xgb_model, X_test)
 
-            # Calculate the error and add to this combination of parameters
-            cur_error = sum((pred_vals - y_test)^2) / length(y_test)
-            err_tensor[j, k, l, m] = err_tensor[j, k, l, m] + cur_error / (n_splits - 1)
+              # Calculate the error and add to this combination of parameters
+              cur_error = sum((pred_vals - y_test)^2) / length(y_test)
+              err_tensor[j, k, l, m, o] = err_tensor[j, k, l, m, o] + cur_error / (n_splits - 1)
+
+            }
 
           }
         }
@@ -515,9 +523,10 @@ xgboost_selection <- function(data, n_splits, window_size, eta_vals, gamma_vals,
   best_gamma = gamma_vals[best_params[1, 2]]
   best_max_depth = max_depths[best_params[1, 3]]
   best_lambda = lambda_vals[best_params[1, 4]]
+  best_nrounds = nrounds[best_params[1, 5]]
 
 
   return(list(eta = best_eta, gamma = best_gamma, max_depth = best_max_depth,
-              lambda = best_lambda, mse = min(err_tensor)))
+              lambda = best_lambda, nrounds = best_nrounds, mse = min(err_tensor)))
 }
 

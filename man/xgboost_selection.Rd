@@ -6,16 +6,18 @@
 \usage{
 xgboost_selection(
   data,
+  nthread = 1,
   n_splits,
   window_size,
   eta_vals,
   gamma_vals,
   max_depths,
-  lambda_vals
+  lambda_vals,
+  nrounds
 )
 }
 \arguments{
-\item{lambda_vals}{}
+\item{nrounds}{}
 }
 \description{
 Title
