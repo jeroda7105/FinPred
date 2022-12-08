@@ -17,6 +17,8 @@ xgboost_selection(
 )
 }
 \arguments{
+\item{data}{A vector containing a univariate time series}
+
 \item{nrounds}{}
 }
 \description{

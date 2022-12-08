@@ -7,6 +7,8 @@
 svr_selection(data, n_splits, window_size, gamma_vals, C_vals, epsilon_vals)
 }
 \arguments{
+\item{data}{A vector containing a univariate time series}
+
 \item{epsilon}{}
 }
 \description{

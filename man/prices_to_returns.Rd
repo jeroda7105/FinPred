@@ -2,13 +2,26 @@
 % Please edit documentation in R/functions.R
 \name{prices_to_returns}
 \alias{prices_to_returns}
-\title{Title}
+\title{Convert price series to returns series}
 \usage{
 prices_to_returns(prices)
 }
 \arguments{
-\item{prices}{}
+\item{prices}{A vector of price data in order of time}
+}
+\value{
+A vector of returns, the relative change in prices for the given vector,
+with length of one less than the input
 }
 \description{
-Title
+Convert price series to returns series
+}
+\examples{
+
+# Initialize data acting as simulated price data
+prices = rnorm(50)
+
+# Convert to vector of returns
+returns = prices_to_returns(prices)
+
 }

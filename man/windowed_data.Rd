@@ -2,13 +2,28 @@
 % Please edit documentation in R/functions.R
 \name{windowed_data}
 \alias{windowed_data}
-\title{Title}
+\title{Get windowed data from a given time series}
 \usage{
 windowed_data(data, window_size)
 }
 \arguments{
-\item{window_size}{}
+\item{data}{A vector containing a univariate time series}
+
+\item{window_size}{The size of the window that precedes the time steps}
+}
+\value{
+A matrix containing windowed data having dimensions
+(# of time points - window_size) x window_size
 }
 \description{
-Title
+Get windowed data from a given time series
+}
+\examples{
+
+# Initializing data
+data = rnorm(50)
+
+# Get windowed data from this vector using window size of 5
+windowed = windowed_data(data, 5)
+
 }

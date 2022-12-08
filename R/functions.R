@@ -1,14 +1,23 @@
 
 
 
-#' Title
+#' Convert price series to returns series
 #'
 #' @param prices
+#' A vector of price data in order of time
 #'
-#' @return
+#' @return A vector of returns, the relative change in prices for the given vector,
+#'  with length of one less than the input
+#'
 #' @export
 #' @examples
-# Takes in a vector of price data and converts it to returns
+#'
+#' # Initialize data acting as simulated price data
+#' prices = rnorm(50)
+#'
+#' # Convert to vector of returns
+#' returns = prices_to_returns(prices)
+#'
 prices_to_returns <- function(prices){
 
   # If data is null or has length less than 2 return an error
@@ -25,15 +34,24 @@ prices_to_returns <- function(prices){
   return(returns)
 }
 
-#' Title
+#' Get windowed data from a given time series
 #'
-#' @param data
-#' @param window_size
+#' @param data A vector containing a univariate time series
+#' @param window_size The size of the window that precedes the time steps
 #'
-#' @return
+#' @return A matrix containing windowed data having dimensions
+#'  (# of time points - window_size) x window_size
+#'
+#'
 #' @export
 #' @examples
-# Takes in a univariate time series and converts it to a windowed dataset
+#'
+#' # Initializing data
+#' data = rnorm(50)
+#'
+#' # Get windowed data from this vector using window size of 5
+#' windowed = windowed_data(data, 5)
+#'
 windowed_data <- function(data, window_size){
 
   # Get size of data
@@ -57,19 +75,28 @@ windowed_data <- function(data, window_size){
   return(window_mat)
 }
 
-#' Title
+#' Get a table of summary statistics for one or more time series
 #'
-#' @inheritParams windowed_data
-#' @param has_names
+#' @param data A vector, matrix or dataframe containing a time series
+#' @param has_names Boolean which is FALSE by default meaning the data has no
+#' column names, or TRUE if the data has column names
 #'
 #' @return
+#' A table containing summary statistics for the given data
 #' @export
 #' @examples
-# takes in a single or multiple time series of returns and
-# outputs a set of lists with summary statistics for the time series
-# Assumes a matrix input with columns as time series
-# Names should either be in the first row of the matrix or given as
-# an argument
+#'
+#' # Generate two series of data as one matrix
+#' series = matrix(rnorm(50 * 2), nrow = 50, ncol = 2)
+#'
+#' # Create table without names
+#' time_summary(series, has_names = FALSE)
+#'
+#' # Create table with names
+#' colnames(series) = c("series_1", "series_2")
+#'
+#' time_summary(series, has_names = TRUE)
+#'
 time_summary <- function(data, has_names = FALSE){
 
   # If names are given, extract them
@@ -123,17 +150,37 @@ time_summary <- function(data, has_names = FALSE){
 
 
 
-#' Title
+#' Create a graph of correlations between given time series
 #'
 #' @inheritParams time_summary
+#' @param data A matrix or dataframe whose columns are time series
 #'
 #' @return
+#' A visualization of a weighted undirected graph whose vertices are the
+#' labels of the series and edge weights are the correlations between two vertices
+#'
 #' @export
 #' @examples
-# Takes in multiple time series in a dataframe or matrix and produces a graph
-# of their correlations
-# NOTE: Requires igraph package
+#'
+#' # Generate three series of data as one matrix
+#' series = matrix(rnorm(50 * 3), nrow = 50, ncol = 3)
+#'
+#' # Create graph without names
+#' cor_graph(series, has_names = FALSE)
+#'
+#' # Create graph with names
+#' colnames(series) = c("series_1", "series_2", "series_3")
+#'
+#' cor_graph(series, has_names = TRUE)
+#'
 cor_graph <- function(data, has_names = FALSE){
+
+  # Check that the data has more than one column
+  if (nrow(data.matrix(data)) < 2) {
+
+    stop("Data must have at least two columns")
+
+  }
 
   # If names are given, extract them
   if (has_names) {

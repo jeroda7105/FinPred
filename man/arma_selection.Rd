@@ -7,6 +7,8 @@
 arma_selection(data, n_splits, p_vals, q_vals)
 }
 \arguments{
+\item{data}{A vector containing a univariate time series}
+
 \item{q_vals}{}
 }
 \description{

@@ -2,13 +2,34 @@
 % Please edit documentation in R/functions.R
 \name{cor_graph}
 \alias{cor_graph}
-\title{Title}
+\title{Create a graph of correlations between given time series}
 \usage{
 cor_graph(data, has_names = FALSE)
 }
 \arguments{
-\item{has_names}{}
+\item{data}{A matrix or dataframe whose columns are time series}
+
+\item{has_names}{Boolean which is FALSE by default meaning the data has no
+column names, or TRUE if the data has column names}
+}
+\value{
+A visualization of a weighted undirected graph whose vertices are the
+labels of the series and edge weights are the correlations between two vertices
 }
 \description{
-Title
+Create a graph of correlations between given time series
+}
+\examples{
+
+# Generate three series of data as one matrix
+series = matrix(rnorm(50 * 3), nrow = 50, ncol = 3)
+
+# Create table without names
+cor_graph(series, has_names = FALSE)
+
+# Create table with names
+colnames(series) = c("series_1", "series_2", "series_3")
+
+cor_graph(series, has_names = TRUE)
+
 }

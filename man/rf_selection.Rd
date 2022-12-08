@@ -7,6 +7,8 @@
 rf_selection(data, n_splits, window_size, n_trees, node_sizes)
 }
 \arguments{
+\item{data}{A vector containing a univariate time series}
+
 \item{node_sizes}{}
 }
 \description{

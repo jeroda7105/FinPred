@@ -2,13 +2,33 @@
 % Please edit documentation in R/functions.R
 \name{time_summary}
 \alias{time_summary}
-\title{Title}
+\title{Get a table of summary statistics for one or more time series}
 \usage{
 time_summary(data, has_names = FALSE)
 }
 \arguments{
-\item{has_names}{}
+\item{data}{A vector, matrix or dataframe containing a time series}
+
+\item{has_names}{Boolean which is FALSE by default meaning the data has no
+column names, or TRUE if the data has column names}
+}
+\value{
+A table containing summary statistics for the given data
 }
 \description{
-Title
+Get a table of summary statistics for one or more time series
+}
+\examples{
+
+# Generate two series of data as one matrix
+series = matrix(rnorm(50 * 2), nrow = 50, ncol = 2)
+
+# Create table without names
+time_summary(series, has_names = FALSE)
+
+# Create table with names
+colnames(series) = c("series_1", "series_2")
+
+time_summary(series, has_names = TRUE)
+
 }
