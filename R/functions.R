@@ -235,23 +235,29 @@ cor_graph <- function(data, has_names = FALSE){
 
 
 
-#' Title
+#' Model selection for ARMA on time series data using a rolling window
 #'
 #' @inheritParams windowed_data
-#' @param n_splits
-#' @param p_vals
-#' @param q_vals
+#' @param n_splits Number of splits on the data for the rolling window in training
+#' and validation
+#' @param p_vals A list of values for the number of autoregressive components in the model
+#' @param q_vals A list of values for the number of moving average components in the model
 #'
 #' @return
+#' A list containing the p and q values yielding the lowest average error,
+#' and this error
+#'
 #' @export
 #' @examples
-# Performs model selection for time series data using a rolling window
-# for arma and outputs this model
-# Inputs:
-# data - a univariate time series
-# p_vals - a list of values for the number of autoregressive components in the model
-# q_vals - a list of values for the number of moving average components in the model
-# n_splits - number of splits on the data for the rolling window
+#'
+#' # Generate data representing a time series
+#' data = rnorm(50)
+#'
+#' # Find the p and q values which give the lowest average error on this data
+#' arma_params = arma_selection(data, n_splits = 3, p_vals = c(1:4), q_vals = c(1:4))
+#'
+#'
+
 arma_selection <- function(data, n_splits, p_vals, q_vals){
 
   # Get the number of p and q values
@@ -310,19 +316,29 @@ arma_selection <- function(data, n_splits, p_vals, q_vals){
 
 
 
-#' Title
+#' Model selection for Random Forests on time series data using a rolling window
 #'
 #' @inheritParams arma_selection
-#' @param window_size
-#' @param n_trees
-#' @param node_sizes
+#' @param window_size The number of previous time points to use to predict the
+#' next one
+#' @param n_trees A vector containing numbers of trees for the random forest models
+#' @param node_sizes A vector containing the minimum sizes of terminal nodes
+#' for the random forest models
 #'
 #' @return
+#' A list containing the values for number of trees and minimum node size
+#' yielding the lowest average error,
+#' and this error
 #' @export
 #' @examples
-# Performs model selection for time series data using a rolling window
-# for random forests and outputs this model
-# NOTE: Requires randomForest package
+#'
+#' # Generate vector of data
+#' data = rnorm(50)
+#'
+#' # Find hyperparameters which give the lowest error
+#' rf_params = rf_selection(data, n_splits = 3, window_size = 2,
+#'  n_trees = c(100, 250, 500), node_sizes = c(1, 3, 5))
+#'
 rf_selection <- function(data, n_splits, window_size, n_trees, node_sizes){
 
   # Get lengths of vectors of parameters
@@ -388,19 +404,30 @@ rf_selection <- function(data, n_splits, window_size, n_trees, node_sizes){
 }
 
 
-#' Title
+#' Model selection for Support Vector Regression on time series data
+#' using a rolling window
 #'
 #' @inheritParams rf_selection
-#' @param gamma
-#' @param C
-#' @param epsilon
+#' @param gamma_vals Vector of gamma values to be passed to the svm models
+#' @param C_vals Vector of C values to be passed to the svm models
+#' @param epsilon_vals Vector of epsilon values to be passed to the svm models
 #'
 #' @return
+#' A list containing the values for gamma, C, and epsilon
+#' yielding the lowest average error,
+#' and this error
 #' @export
 #' @examples
-# Performs model selection for time series data using a rolling window
-# for Support Vector Regression and outputs this model
-# NOTE: Requires e1071 package
+#'
+#' # Generate vector of data
+#' data = rnorm(50)
+#'
+#' # Find hyperparameters which give the lowest error
+#' svr_params = svr_selection(data, n_splits = 3, window_size = 2,
+#'  gamma_vals = c(0.001, 0.01, 0.1), C_vals = c(0.5, 1, 2),
+#'   epsilon_vals = c(0.05, 0.1, 0.2))
+#'
+#'
 svr_selection <- function(data, n_splits, window_size, gamma_vals, C_vals,
                           epsilon_vals){
 
@@ -473,22 +500,34 @@ svr_selection <- function(data, n_splits, window_size, gamma_vals, C_vals,
 }
 
 
-#' Title
+#' Model selection for XGBoost on time series data using a rolling window
 #'
 #' @inheritParams rf_selection
-#' @param nthread
-#' @param eta_vals
-#' @param gamma_vals
-#' @param max_depths
-#' @param lambda_vals
-#' @param nrounds
+#' @param nthread Number of processor threads to use for fitting the xgboost model
+#' @param eta_vals Vector of eta values to be passed to the xgboost models
+#' @param gamma_vals Vector of gamma values to be passed to the xgboost models
+#' @param max_depths Vector of max_depth values to be passed to the xgboost models
+#' @param lambda_vals Vector of lambda values to be passed to the xgboost models
+#' @param nrounds Vector of values for the number of decision trees in the final models
 #'
 #' @return
+#' A list containing the values for eta, gamma, max_depth, lambda, and nrounds
+#' yielding the lowest average error,
+#' and this error
 #' @export
 #' @examples
-# Performs model selection for time series data using a rolling window
-# for xgboost and outputs this model
-# NOTE: Requires xgboost package
+#'
+#' # Generate vector of data
+#' data = rnorm(50)
+#'
+#'
+#' # Find hyperparameters which give the lowest error
+#' xgb_params = xgboost_selection(data, nthread = 1, n_splits = 3, window_size = 2,
+#'  eta_vals = c(0.75, 1), gamma_vals = c(1.0e-2, 0.1), max_depths = c(2, 3, 4),
+#'  lambda_vals = c(0.1, 0.25, 0.5), nrounds = c(1, 2, 3))
+#'
+#'
+#'
 xgboost_selection <- function(data, nthread = 1, n_splits, window_size, eta_vals,
                               gamma_vals, max_depths, lambda_vals, nrounds){
 

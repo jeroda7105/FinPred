@@ -2,15 +2,34 @@
 % Please edit documentation in R/functions.R
 \name{arma_selection}
 \alias{arma_selection}
-\title{Title}
+\title{Model selection for ARMA on time series data using a rolling window}
 \usage{
 arma_selection(data, n_splits, p_vals, q_vals)
 }
 \arguments{
 \item{data}{A vector containing a univariate time series}
 
-\item{q_vals}{}
+\item{n_splits}{Number of splits on the data for the rolling window in training
+and validation}
+
+\item{p_vals}{A list of values for the number of autoregressive components in the model}
+
+\item{q_vals}{A list of values for the number of moving average components in the model}
+}
+\value{
+A list containing the p and q values yielding the lowest average error,
+and this error
 }
 \description{
-Title
+Model selection for ARMA on time series data using a rolling window
+}
+\examples{
+
+# Generate data representing a time series
+data = rnorm(50)
+
+# Find the p and q values which give the lowest average error on this data
+arma_params = arma_selection(data, n_splits = 3, p_vals = c(1:4), q_vals = c(1:4))
+
+
 }

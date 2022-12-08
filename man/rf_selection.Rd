@@ -2,15 +2,39 @@
 % Please edit documentation in R/functions.R
 \name{rf_selection}
 \alias{rf_selection}
-\title{Title}
+\title{Model selection for Random Forests on time series data using a rolling window}
 \usage{
 rf_selection(data, n_splits, window_size, n_trees, node_sizes)
 }
 \arguments{
 \item{data}{A vector containing a univariate time series}
 
-\item{node_sizes}{}
+\item{n_splits}{Number of splits on the data for the rolling window in training
+and validation}
+
+\item{window_size}{The number of previous time points to use to predict the
+next one}
+
+\item{n_trees}{A vector containing numbers of trees for the random forest models}
+
+\item{node_sizes}{A vector containing the minimum sizes of terminal nodes
+for the random forest models}
+}
+\value{
+A list containing the values for number of trees and minimum node size
+yielding the lowest average error,
+and this error
 }
 \description{
-Title
+Model selection for Random Forests on time series data using a rolling window
+}
+\examples{
+
+# Generate vector of data
+data = rnorm(50)
+
+# Find hyperparameters which give the lowest error
+rf_params = rf_selection(data, n_splits = 3, window_size = 2,
+ n_trees = c(100, 250, 500), node_sizes = c(1, 3, 5))
+
 }

@@ -24,10 +24,10 @@ Create a graph of correlations between given time series
 # Generate three series of data as one matrix
 series = matrix(rnorm(50 * 3), nrow = 50, ncol = 3)
 
-# Create table without names
+# Create graph without names
 cor_graph(series, has_names = FALSE)
 
-# Create table with names
+# Create graph with names
 colnames(series) = c("series_1", "series_2", "series_3")
 
 cor_graph(series, has_names = TRUE)

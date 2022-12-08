@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{xgboost_selection}
 \alias{xgboost_selection}
-\title{Title}
+\title{Model selection for XGBoost on time series data using a rolling window}
 \usage{
 xgboost_selection(
   data,
@@ -19,8 +19,43 @@ xgboost_selection(
 \arguments{
 \item{data}{A vector containing a univariate time series}
 
-\item{nrounds}{}
+\item{nthread}{Number of processor threads to use for fitting the xgboost model}
+
+\item{n_splits}{Number of splits on the data for the rolling window in training
+and validation}
+
+\item{window_size}{The number of previous time points to use to predict the
+next one}
+
+\item{eta_vals}{Vector of eta values to be passed to the xgboost models}
+
+\item{gamma_vals}{Vector of gamma values to be passed to the xgboost models}
+
+\item{max_depths}{Vector of max_depth values to be passed to the xgboost models}
+
+\item{lambda_vals}{Vector of lambda values to be passed to the xgboost models}
+
+\item{nrounds}{Vector of values for the number of decision trees in the final models}
+}
+\value{
+A list containing the values for eta, gamma, max_depth, lambda, and nrounds
+yielding the lowest average error,
+and this error
 }
 \description{
-Title
+Model selection for XGBoost on time series data using a rolling window
+}
+\examples{
+
+# Generate vector of data
+data = rnorm(50)
+
+
+# Find hyperparameters which give the lowest error
+xgb_params = xgboost_selection(data, nthread = 1, n_splits = 3, window_size = 2,
+ eta_vals = c(0.75, 1), gamma_vals = c(1.0e-2, 0.1), max_depths = c(2, 3, 4),
+ lambda_vals = c(0.1, 0.25, 0.5), nrounds = c(1, 2, 3))
+
+
+
 }

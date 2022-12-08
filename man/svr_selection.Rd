@@ -2,15 +2,44 @@
 % Please edit documentation in R/functions.R
 \name{svr_selection}
 \alias{svr_selection}
-\title{Title}
+\title{Model selection for Support Vector Regression on time series data
+using a rolling window}
 \usage{
 svr_selection(data, n_splits, window_size, gamma_vals, C_vals, epsilon_vals)
 }
 \arguments{
 \item{data}{A vector containing a univariate time series}
 
-\item{epsilon}{}
+\item{n_splits}{Number of splits on the data for the rolling window in training
+and validation}
+
+\item{window_size}{The number of previous time points to use to predict the
+next one}
+
+\item{gamma_vals}{Vector of gamma values to be passed to the svm models}
+
+\item{C_vals}{Vector of C values to be passed to the svm models}
+
+\item{epsilon_vals}{Vector of epsilon values to be passed to the svm models}
+}
+\value{
+A list containing the values for gamma, C, and epsilon
+yielding the lowest average error,
+and this error
 }
 \description{
-Title
+Model selection for Support Vector Regression on time series data
+using a rolling window
+}
+\examples{
+
+# Generate vector of data
+data = rnorm(50)
+
+# Find hyperparameters which give the lowest error
+svr_params = svr_selection(data, n_splits = 3, window_size = 2,
+ gamma_vals = c(0.001, 0.01, 0.1), C_vals = c(0.5, 1, 2),
+  epsilon_vals = c(0.05, 0.1, 0.2))
+
+
 }
