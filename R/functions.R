@@ -59,7 +59,8 @@ windowed_data <- function(data, window_size){
 
 #' Title
 #'
-#' @param data
+#' @inheritParams windowed_data
+#' @param has_names
 #'
 #' @return
 #' @export
@@ -124,8 +125,7 @@ time_summary <- function(data, has_names = FALSE){
 
 #' Title
 #'
-#' @param data
-#' @param has_names
+#' @inheritParams time_summary
 #'
 #' @return
 #' @export
@@ -190,7 +190,7 @@ cor_graph <- function(data, has_names = FALSE){
 
 #' Title
 #'
-#' @param data
+#' @inheritParams windowed_data
 #' @param n_splits
 #' @param p_vals
 #' @param q_vals
@@ -265,8 +265,7 @@ arma_selection <- function(data, n_splits, p_vals, q_vals){
 
 #' Title
 #'
-#' @param data
-#' @param n_splits
+#' @inheritParams arma_selection
 #' @param window_size
 #' @param n_trees
 #' @param node_sizes
@@ -344,9 +343,7 @@ rf_selection <- function(data, n_splits, window_size, n_trees, node_sizes){
 
 #' Title
 #'
-#' @param data
-#' @param n_splits
-#' @param window_size
+#' @inheritParams rf_selection
 #' @param gamma
 #' @param C
 #' @param epsilon
@@ -431,10 +428,8 @@ svr_selection <- function(data, n_splits, window_size, gamma_vals, C_vals,
 
 #' Title
 #'
-#' @param data
+#' @inheritParams rf_selection
 #' @param nthread
-#' @param n_splits
-#' @param window_size
 #' @param eta_vals
 #' @param gamma_vals
 #' @param max_depths

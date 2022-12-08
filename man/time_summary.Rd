@@ -7,7 +7,7 @@
 time_summary(data, has_names = FALSE)
 }
 \arguments{
-\item{data}{}
+\item{has_names}{}
 }
 \description{
 Title
