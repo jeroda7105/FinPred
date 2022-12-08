@@ -182,9 +182,8 @@ cor_graph <- function(data, has_names = FALSE){
   # Create the graph visualization
   graph = graph_from_adjacency_matrix(adj_mat, mode = "undirected",
                                            weighted = TRUE)
-  graph_plot = igraph::plot.igraph(graph, edge.label = round(igraph::E(graph)$weight, 3))
+  igraph::plot.igraph(graph, edge.label = round(igraph::E(graph)$weight, 3))
 
-  return(graph_plot)
 }
 
 
