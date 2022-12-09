@@ -1,5 +1,6 @@
 ---
 title: "FinPred"
+author: "Jose Rodriguez-Acosta"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{FinPred}
@@ -15,14 +16,33 @@ knitr::opts_chunk$set(
 ```
 
 ## Introduction
-
+In the field of finance, developing an
+understanding of assets’ returns over time is important for forming decisions related to trading
+such assets. Here, an asset’s return represents the relative change in price of the asset over a
+specified time period. Returns are often modeled rather than the prices themselves in practice
+due to them having properties that are more desirable for this task (Tsay, 2005). The process of
+understanding asset returns can be aided by the use of methods for analysis and prediction on
+financial time series data. In this context, one can analyze aspects of the returns on individual
+assets, as well as relationships between the returns of assets through various means.Furthermore,
+one can ideally predict these returns accurately through time series prediction methods. 
+FinPred offers functionality to help address these causes. Firstly, the package can be used
+to perform data pre-processing by converting price data to return data, and by creating 
+windowed data from a given time series. Moreover, the package contains functions to
+visualize summary statistics for and correlations between given assets. Lastly, there are
+functions to perform model selection for different time series prediction and machine learning methods given a time series, that find the hyperparameters yielding the lowest average prediction error over a rolling window. 
 
 ## Installation
+You can install the development version of FinPred from [GitHub](https://github.com/jeroda7105/FinPred) with:
 
-```{r setup}
+``` r
+# install.packages("devtools")
+devtools::install_github("jeroda7105/FinPred")
+
+```
+The package can then be imported with the command
+``` r
 library(FinPred)
 ```
-
 
 ## Using the Package
 
