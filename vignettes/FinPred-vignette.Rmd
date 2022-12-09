@@ -14,6 +14,55 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Introduction
+
+
+## Installation
+
 ```{r setup}
 library(FinPred)
 ```
+
+
+## Using the Package
+
+
+## References
+Box, G. E. P., Jenkins, G. M., & Reinsel, G. C. (1994). Time Series Analysis: Forecasting and Control. Prentice Hall. 
+
+Breiman, L. (2001). Machine Learning, 45(1), 5–32. https://doi.org/10.1023/a:1010933404324 
+
+Chen, T., & Guestrin, C. (2016). XGBoost. Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. https://doi.org/10.1145/2939672.2939785 
+
+Chen T, He T, Benesty M, Khotilovich V, Tang Y, Cho H, Chen K, Mitchell R, Cano I,
+  Zhou T, Li M, Xie J, Lin M, Geng Y, Li Y, Yuan J (2022). _xgboost: Extreme
+  Gradient Boosting_. R package version 1.6.0.1,
+  <https://CRAN.R-project.org/package=xgboost>.
+
+Cortes, C., & Vapnik, V. (1995). Support-Vector Networks. Machine Learning, 20(3), 273–297. https://doi.org/10.1007/bf00994018 
+
+Csardi G, Nepusz T: The igraph software package for complex network research,
+  InterJournal, Complex Systems 1695. 2006. https://igraph.org
+
+Komsta L, Novomestky F (2022). _moments: Moments, Cumulants, Skewness, Kurtosis
+  and Related Tests_. R package version 0.14.1,
+  <https://CRAN.R-project.org/package=moments>.
+
+Liaw A., Wiener  M. (2002). Classification and Regression by randomForest. R
+  News 2(3), 18--22.
+
+Meyer D, Dimitriadou E, Hornik K, Weingessel A, Leisch F (2022). _e1071: Misc
+  Functions of the Department of Statistics, Probability Theory Group (Formerly:
+  E1071), TU Wien_. R package version 1.7-11,
+  <https://CRAN.R-project.org/package=e1071>.
+
+R Core Team (2022). R: A language and environment for statistical computing. R
+  Foundation for Statistical Computing, Vienna, Austria. URL
+  https://www.R-project.org/.
+
+Ryan JA, Ulrich JM (2022). _quantmod: Quantitative Financial Modelling Framework_.
+  R package version 0.4.20, <https://CRAN.R-project.org/package=quantmod>.
+
+Tsay, R. S. (2010). Analysis of Financial Time Series. John Wiley & Sons.
+
+
