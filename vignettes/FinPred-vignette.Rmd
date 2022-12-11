@@ -215,7 +215,7 @@ xgb_params
 ```
 
 The following code presents an example of using the previously obtained hyperparameters
-for Support Vector Machines to fit a model and then assessing the performance on future values:
+for Support Vector Machines to fit a model:
 
 ``` {r}
 # Create supervised data for svm
@@ -239,7 +239,11 @@ y_test = y[(train_idxs + 1):n]
 # Fit a model with chosen parameters on data
 svr_model = e1071::svm(X_train, y_train, gamma = svr_params$gamma,
                        C = svr_params$C, epsilon = svr_params$epsilon)
+```
 
+Now that the model is fit, prediction performance on future values is assessed:
+
+```{r fig.width = 4, fig.height = 4}
 # Get predicted values
 pred_vals = predict(svr_model, X_test)
 
