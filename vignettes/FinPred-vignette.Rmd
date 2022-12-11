@@ -47,7 +47,7 @@ library(FinPred)
 
 ## Using the Package
 For this example, we will begin by importing real time series data for $SPY, 
-an exchange traded fund (ETF) which attempts to track the S&P 500 Index, $GLD, 
+an exchange-traded fund (ETF) which attempts to track the S&P 500 Index, $GLD, 
 an ETF which attempts to track the price of gold, and $TLT, which attempts to 
 track the price of U.S. treasury bonds with 20 or more years until maturity. 
 The data to be used are adjusted closing prices from yahoo finance, extracted using
