@@ -158,7 +158,7 @@ windowed_spy_ret[1:3, ]
 One machine learning method that can be used for prediction is the Random Forest model
 (Breiman, 2001). The function rf_selection() can be used to tune hyperparameters 
 for this model using the implementation from the randomForest R package (Liaw & Wiener, 2002).
-An example of it's use on this data is:
+An example of its use on this data is:
 
 ``` {r}
 
