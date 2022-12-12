@@ -15,9 +15,9 @@ Imports:
     moments,
     randomForest,
     stats,
-    xgboost
+    xgboost,
+    quantmod
 Suggests: 
     knitr,
-    quantmod,
     rmarkdown
 VignetteBuilder: knitr
