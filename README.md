@@ -48,7 +48,7 @@ gld_adj_close = gld_data$GLD.Adjusted
 ```
 
 Once we have the time series of prices, we can use the function
-prices_to_returns() to convert them to series of returns and then
+`prices_to_returns` to convert them to series of returns and then
 process this data:
 
 ``` r
@@ -66,7 +66,7 @@ std_gld_ret_train = std_gld_ret[1:train_idxs]
 ```
 
 One machine learning method that can be used for prediction is the
-Random Forest model (Breiman, 2001). The function rf_selection() can be
+Random Forest model (Breiman, 2001). The function `rf_selection` can be
 used to tune hyperparameters for this model using the implementation
 from the randomForest R package (Liaw & Wiener, 2002). An example of its
 use on this data is:
@@ -85,7 +85,7 @@ rf_params
 #> [1] 7
 #> 
 #> $mse
-#> [1] 1.034222
+#> [1] 1.032633
 ```
 
 The following code shows how to use the previously obtained
@@ -127,11 +127,11 @@ pred_vals = predict(rf_model, X_test)
 # Calculate the error 
 error = sum((pred_vals - y_test)^2) / length(y_test)
 error
-#> [1] 0.8087459
+#> [1] 0.8151546
 
 # Get proportion of correct directional movements predicted
 sum(sign(y_test) == sign(pred_vals)) / length(y_test)
-#> [1] 0.4925373
+#> [1] 0.4676617
 
 
 # Overlay predictions

@@ -75,7 +75,7 @@ gld_adj_close = gld_data$GLD.Adjusted
 tlt_adj_close = tlt_data$TLT.Adjusted
 ```
 
-Once we have each time series of prices, we can use the function prices_to_returns()
+Once we have each time series of prices, we can use the function `prices_to_returns`
 to convert them to series of returns in this way:
 
 ``` {r}
@@ -87,7 +87,7 @@ tlt_ret = prices_to_returns(tlt_adj_close)
 
 
 We can then combine these time series to create a dataframe containing them as columns, 
-and then create a table of summary statistics using the function time_summary(). This
+and then create a table of summary statistics using the function `time_summary`. This
 function gives the mean, standard deviation, skewness, and excess kurtosis for each 
 given series in the dataframe. The skewness and kurtosis are calculated using the moments
 R package (Komsta & Novomestky, 2022).
@@ -104,7 +104,7 @@ table
 
 ```
 
-Furthermore, using the R package igraph (Csardi & Nepusz, 2006), the function cor_graph() creates a weighted, undirected graph with
+Furthermore, using the R package igraph (Csardi & Nepusz, 2006), the function `cor_graph` creates a weighted, undirected graph with
 the vertices being the given assets and the edge weights being the correlations 
 between their corresponding time series. For this example, it can be called as:
 
@@ -115,9 +115,9 @@ cor_graph(data, has_names = TRUE)
 
 ```
 
-For time series prediction, the ARMA model seen in Box et al., can be fit using the arima() function
+For time series prediction, the ARMA model seen in Box et al., can be fit using the `arima` function
 within the stats R package (R Core Team, 2022). In this context, the number of autoregressive and moving average components, p and q, can be changed to improve the model fit. The function
-arma_selection() can be used for these purposes. For example: 
+`arma_selection` can be used for these purposes. For example: 
 
 ``` {r}
 
@@ -143,7 +143,7 @@ arma_params
 
 Supervised learning models require predictors and an output, so for univariate time
 series, windowed data containing previous observations can be used as the predictors 
-in these models. The function windowed_data() can be used to create these as such:
+in these models. The function `windowed_data` can be used to create these as such:
 
 ``` {r}
 
@@ -156,7 +156,7 @@ windowed_spy_ret[1:3, ]
 
 
 One machine learning method that can be used for prediction is the Random Forest model
-(Breiman, 2001). The function rf_selection() can be used to tune hyperparameters 
+(Breiman, 2001). The function `rf_selection` can be used to tune hyperparameters 
 for this model using the implementation from the randomForest R package (Liaw & Wiener, 2002).
 An example of its use on this data is:
 
@@ -171,8 +171,8 @@ rf_params
 
 ```
 
-Similarly, Support Vector Machines, can be used for such a regression task (Cortes & Vapnik, 1995).  The function svr_selection() can be used to tune hyperparameters 
-for this model using the svm() function from the e1071 R package (Meyer et al., 2022).
+Similarly, Support Vector Machines, can be used for such a regression task (Cortes & Vapnik, 1995).  The function `svr_selection` can be used to tune hyperparameters 
+for this model using the `svm` function from the e1071 R package (Meyer et al., 2022).
 Below is how it can be used:
 
 
@@ -190,8 +190,8 @@ svr_params
 
 ```
 
-Lastly, the XGBoost model can be used for prediction in the setting of supervised learning (Chen et al., 2016).  The function xgboost_selection() can be used to tune hyperparameters 
-for this model using the xgboost() function from the xgboost R package (Chen et al., 2022).
+Lastly, the XGBoost model can be used for prediction in the setting of supervised learning (Chen et al., 2016).  The function `xgboost_selection` can be used to tune hyperparameters 
+for this model using the `xgboost` function from the xgboost R package (Chen et al., 2022).
 An example of its use is:
 
 

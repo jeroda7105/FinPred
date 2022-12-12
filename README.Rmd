@@ -48,7 +48,7 @@ gld_data = as.data.frame(quantmod::getSymbols('GLD', env = NULL))
 gld_adj_close = gld_data$GLD.Adjusted
 ```
 
-Once we have the time series of prices, we can use the function prices_to_returns()
+Once we have the time series of prices, we can use the function `prices_to_returns`
 to convert them to series of returns and then process this data:
 
 ``` {r}
@@ -67,7 +67,7 @@ std_gld_ret_train = std_gld_ret[1:train_idxs]
 ```
 
 One machine learning method that can be used for prediction is the Random Forest model
-(Breiman, 2001). The function rf_selection() can be used to tune hyperparameters 
+(Breiman, 2001). The function `rf_selection` can be used to tune hyperparameters 
 for this model using the implementation from the randomForest R package (Liaw & Wiener, 2002).
 An example of its use on this data is:
 
