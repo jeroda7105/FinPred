@@ -20,7 +20,7 @@ You can install the development version of FinPred from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("jeroda7105/FinPred")
+devtools::install_github("jeroda7105/FinPred", build_vignettes = TRUE)
 ```
 
 The package can then be imported with the command
@@ -79,13 +79,13 @@ rf_params = rf_selection(std_gld_ret_train, n_splits = 10, window_size = 10, n_t
                          node_sizes = node_sizes)
 rf_params
 #> $ntree
-#> [1] 750
+#> [1] 1000
 #> 
 #> $nodesize
 #> [1] 7
 #> 
 #> $mse
-#> [1] 1.032997
+#> [1] 1.034222
 ```
 
 The following code shows how to use the previously obtained
@@ -127,11 +127,11 @@ pred_vals = predict(rf_model, X_test)
 # Calculate the error 
 error = sum((pred_vals - y_test)^2) / length(y_test)
 error
-#> [1] 0.8043091
+#> [1] 0.8087459
 
 # Get proportion of correct directional movements predicted
 sum(sign(y_test) == sign(pred_vals)) / length(y_test)
-#> [1] 0.4825871
+#> [1] 0.4925373
 
 
 # Overlay predictions

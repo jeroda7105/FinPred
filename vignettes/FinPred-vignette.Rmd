@@ -37,7 +37,7 @@ You can install the development version of FinPred from [GitHub](https://github.
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("jeroda7105/FinPred")
+devtools::install_github("jeroda7105/FinPred", build_vignettes = TRUE)
 
 ```
 The package can then be imported with the command
